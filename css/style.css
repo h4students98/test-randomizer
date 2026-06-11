@@ -180,6 +180,7 @@ button.whatsapp:hover {
 
 .list-item span {
   flex: 1;
+  min-width: 0;
   overflow-wrap: anywhere;
   font-size: 1rem;
   line-height: 1.4;
@@ -225,10 +226,11 @@ button.whatsapp:hover {
 
 .group-header .group-name {
   flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-weight: 700;
   font-size: 0.95rem;
   color: #c4b5fd;
-  overflow-wrap: anywhere;
 }
 
 .group-header input[type="checkbox"] {
@@ -265,6 +267,7 @@ button.whatsapp:hover {
   color: #c4b5fd;
   white-space: nowrap;
   flex: 0 0 auto;
+  min-width: 0;
 }
 
 /* Item senza gruppo, nella sezione "Senza gruppo" */
@@ -305,4 +308,5 @@ button.whatsapp:hover {
   button {
     width: 100%;
   }
-}
+  }
+  
