@@ -3,14 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Dividi Item</title>
-
   <link rel="stylesheet" href="css/style.css" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#111827" />
 </head>
-
 <body>
   <main class="app">
     <header class="app-header">
@@ -18,46 +15,52 @@
       <p>Crea item, selezionali e dividili casualmente tra più persone.</p>
     </header>
 
+    <!-- PERSONE -->
     <section class="card">
       <h2>1. Persone</h2>
-
       <div class="input-row">
         <input id="personInput" type="text" placeholder="Nome persona" />
         <button id="addPersonBtn">Aggiungi</button>
       </div>
-
       <ul id="peopleList" class="list"></ul>
     </section>
 
+    <!-- GRUPPI -->
     <section class="card">
-      <h2>2. Item</h2>
+      <h2>2. Gruppi <span class="optional-label">(opzionale)</span></h2>
+      <div class="input-row">
+        <input id="groupInput" type="text" placeholder="Nome gruppo" />
+        <button id="addGroupBtn">Aggiungi</button>
+      </div>
+      <ul id="groupsList" class="list"></ul>
+    </section>
 
+    <!-- ITEM -->
+    <section class="card">
+      <h2>3. Item</h2>
       <div class="input-row">
         <input id="itemInput" type="text" placeholder="Nome item" />
         <button id="addItemBtn">Aggiungi</button>
       </div>
-
       <div class="actions-row">
         <button id="selectAllBtn" class="secondary">Seleziona tutti</button>
         <button id="deselectAllBtn" class="secondary">Deseleziona tutti</button>
       </div>
-
       <ul id="itemsList" class="list"></ul>
     </section>
 
+    <!-- SUDDIVISIONE -->
     <section class="card">
-      <h2>3. Suddivisione</h2>
-
+      <h2>4. Suddivisione</h2>
       <button id="divideBtn" class="primary">Dividi casualmente</button>
-
       <pre id="resultBox" class="result-box">Il risultato apparirà qui.</pre>
-
       <div class="actions-row">
         <button id="shareBtn" class="whatsapp" disabled>Invia / condividi su WhatsApp</button>
         <button id="copyBtn" class="secondary" disabled>Copia testo</button>
       </div>
     </section>
 
+    <!-- GESTIONE DATI -->
     <section class="card danger-zone">
       <h2>Gestione dati</h2>
       <button id="clearDataBtn" class="danger">Cancella tutti i dati salvati</button>
