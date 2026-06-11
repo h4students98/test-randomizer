@@ -1,195 +1,313 @@
-* {
-  box-sizing: border-box;
+const STORAGE_KEY = "item-divider-pwa-state-v1";
+
+const state = {
+  people: [],
+  items: [],
+  lastResultText: ""
+};
+
+const personInput = document.getElementById("personInput");
+const addPersonBtn = document.getElementById("addPersonBtn");
+const peopleList = document.getElementById("peopleList");
+
+const itemInput = document.getElementById("itemInput");
+const addItemBtn = document.getElementById("addItemBtn");
+const itemsList = document.getElementById("itemsList");
+
+const selectAllBtn = document.getElementById("selectAllBtn");
+const deselectAllBtn = document.getElementById("deselectAllBtn");
+
+const divideBtn = document.getElementById("divideBtn");
+const resultBox = document.getElementById("resultBox");
+const shareBtn = document.getElementById("shareBtn");
+const copyBtn = document.getElementById("copyBtn");
+const clearDataBtn = document.getElementById("clearDataBtn");
+
+function generateId() {
+  return crypto.randomUUID
+    ? crypto.randomUUID()
+    : String(Date.now()) + "-" + Math.random().toString(16).slice(2);
 }
 
-:root {
-  --bg: #0f172a;
-  --card: #111827;
-  --text: #f9fafb;
-  --muted: #9ca3af;
-  --border: #374151;
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --secondary: #374151;
-  --danger: #dc2626;
-  --danger-hover: #b91c1c;
-  --whatsapp: #22c55e;
-  --whatsapp-hover: #16a34a;
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({
+    people: state.people,
+    items: state.items,
+    lastResultText: state.lastResultText
+  }));
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: linear-gradient(180deg, #020617, var(--bg));
-  color: var(--text);
-}
+function loadState() {
+  const raw = localStorage.getItem(STORAGE_KEY);
 
-.app {
-  width: min(720px, 100%);
-  margin: 0 auto;
-  padding: 20px;
-}
+  if (!raw) return;
 
-.app-header {
-  margin-bottom: 20px;
-}
-
-.app-header h1 {
-  margin: 0 0 8px;
-  font-size: 2rem;
-}
-
-.app-header p {
-  margin: 0;
-  color: var(--muted);
-}
-
-.card {
-  background: rgba(17, 24, 39, 0.96);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 18px;
-  margin-bottom: 16px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-}
-
-.card h2 {
-  margin-top: 0;
-  font-size: 1.15rem;
-}
-
-.input-row,
-.actions-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-input {
-  flex: 1;
-  min-width: 0;
-  padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: #020617;
-  color: var(--text);
-  font-size: 1rem;
-}
-
-input:focus {
-  outline: 2px solid var(--primary);
-  border-color: var(--primary);
-}
-
-button {
-  border: none;
-  border-radius: 12px;
-  padding: 12px 14px;
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: white;
-  background: var(--secondary);
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
-button.primary {
-  width: 100%;
-  background: var(--primary);
-  margin-bottom: 12px;
-}
-
-button.primary:hover {
-  background: var(--primary-hover);
-}
-
-button.secondary {
-  background: var(--secondary);
-}
-
-button.danger {
-  width: 100%;
-  background: var(--danger);
-}
-
-button.danger:hover {
-  background: var(--danger-hover);
-}
-
-button.whatsapp {
-  flex: 1;
-  background: var(--whatsapp);
-}
-
-button.whatsapp:hover {
-  background: var(--whatsapp-hover);
-}
-
-.list {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-.list-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #020617;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 10px;
-  margin-bottom: 8px;
-}
-
-.list-item span {
-  flex: 1;
-  overflow-wrap: anywhere;
-}
-
-.list-item input[type="checkbox"] {
-  flex: 0;
-  width: 20px;
-  height: 20px;
-}
-
-.icon-button {
-  padding: 8px 10px;
-  background: #1f2937;
-}
-
-.result-box {
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-  min-height: 120px;
-  background: #020617;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px;
-  color: var(--text);
-  font-family: inherit;
-}
-
-.danger-zone {
-  border-color: rgba(220, 38, 38, 0.5);
-}
-
-@media (max-width: 520px) {
-  .app {
-    padding: 14px;
-  }
-
-  .input-row,
-  .actions-row {
-    flex-direction: column;
-  }
-
-  button {
-    width: 100%;
+  try {
+    const saved = JSON.parse(raw);
+    state.people = Array.isArray(saved.people) ? saved.people : [];
+    state.items = Array.isArray(saved.items) ? saved.items : [];
+    state.lastResultText = typeof saved.lastResultText === "string" ? saved.lastResultText : "";
+  } catch {
+    localStorage.removeItem(STORAGE_KEY);
   }
 }
+
+function normalizeName(value) {
+  return value.trim().replace(/\s+/g, " ");
+}
+
+function renderPeople() {
+  peopleList.innerHTML = "";
+
+  if (state.people.length === 0) {
+    peopleList.innerHTML = `<li class="list-item"><span>Nessuna persona aggiunta.</span></li>`;
+    return;
+  }
+
+  state.people.forEach(person => {
+    const li = document.createElement("li");
+    li.className = "list-item";
+
+    const span = document.createElement("span");
+    span.textContent = person.name;
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "icon-button";
+    deleteBtn.textContent = "✕";
+    deleteBtn.setAttribute("aria-label", `Elimina ${person.name}`);
+    deleteBtn.addEventListener("click", () => removePerson(person.id));
+
+    li.append(span, deleteBtn);
+    peopleList.appendChild(li);
+  });
+}
+
+function renderItems() {
+  itemsList.innerHTML = "";
+
+  if (state.items.length === 0) {
+    itemsList.innerHTML = `<li class="list-item"><span>Nessun item aggiunto.</span></li>`;
+    return;
+  }
+
+  state.items.forEach(item => {
+    const li = document.createElement("li");
+    li.className = "list-item";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = item.selected;
+    checkbox.addEventListener("change", () => {
+      item.selected = checkbox.checked;
+      saveState();
+    });
+
+    const span = document.createElement("span");
+    span.textContent = item.name;
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "icon-button";
+    deleteBtn.textContent = "✕";
+    deleteBtn.setAttribute("aria-label", `Elimina ${item.name}`);
+    deleteBtn.addEventListener("click", () => removeItem(item.id));
+
+    li.append(checkbox, span, deleteBtn);
+    itemsList.appendChild(li);
+  });
+}
+
+function renderResult() {
+  resultBox.textContent = state.lastResultText || "Il risultato apparirà qui.";
+  shareBtn.disabled = !state.lastResultText;
+  copyBtn.disabled = !state.lastResultText;
+}
+
+function render() {
+  renderPeople();
+  renderItems();
+  renderResult();
+}
+
+function addPerson() {
+  const name = normalizeName(personInput.value);
+  if (!name) return;
+
+  state.people.push({
+    id: generateId(),
+    name
+  });
+
+  personInput.value = "";
+  saveState();
+  render();
+}
+
+function removePerson(id) {
+  state.people = state.people.filter(person => person.id !== id);
+  saveState();
+  render();
+}
+
+function addItem() {
+  const name = normalizeName(itemInput.value);
+  if (!name) return;
+
+  state.items.push({
+    id: generateId(),
+    name,
+    selected: true
+  });
+
+  itemInput.value = "";
+  saveState();
+  render();
+}
+
+function removeItem(id) {
+  state.items = state.items.filter(item => item.id !== id);
+  saveState();
+  render();
+}
+
+function shuffleArray(array) {
+  const result = [...array];
+
+  for (let i = result.length - 1; i > 0; i--) {
+    const randomIndex = Math.floor(Math.random() * (i + 1));
+    [result[i], result[randomIndex]] = [result[randomIndex], result[i]];
+  }
+
+  return result;
+}
+
+function divideItems() {
+  const selectedItems = state.items.filter(item => item.selected);
+
+  if (state.people.length < 1) {
+    alert("Aggiungi almeno una persona.");
+    return;
+  }
+
+  if (selectedItems.length < 1) {
+    alert("Seleziona almeno un item.");
+    return;
+  }
+
+  const shuffledItems = shuffleArray(selectedItems);
+  const shuffledPeople = shuffleArray(state.people);
+
+  const assignment = {};
+  shuffledPeople.forEach(person => {
+    assignment[person.name] = [];
+  });
+
+  shuffledItems.forEach((item, index) => {
+    const person = shuffledPeople[index % shuffledPeople.length];
+    assignment[person.name].push(item.name);
+  });
+
+  state.lastResultText = formatResult(assignment);
+  saveState();
+  render();
+}
+
+function formatResult(assignment) {
+  const lines = [];
+  const now = new Date();
+
+  lines.push("Suddivisione casuale");
+  lines.push(now.toLocaleString("it-IT"));
+  lines.push("");
+
+  Object.entries(assignment).forEach(([personName, items]) => {
+    lines.push(`${personName}:`);
+
+    if (items.length === 0) {
+      lines.push("- nessun item");
+    } else {
+      items.forEach(item => lines.push(`- ${item}`));
+    }
+
+    lines.push("");
+  });
+
+  return lines.join("\n").trim();
+}
+
+async function shareResult() {
+  if (!state.lastResultText) return;
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: "Suddivisione item",
+        text: state.lastResultText
+      });
+      return;
+    } catch (error) {
+      // Se l'utente annulla la condivisione, non serve mostrare errore.
+      if (error.name === "AbortError") return;
+    }
+  }
+
+  const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(state.lastResultText);
+  window.open(whatsappUrl, "_blank");
+}
+
+async function copyResult() {
+  if (!state.lastResultText) return;
+
+  try {
+    await navigator.clipboard.writeText(state.lastResultText);
+    alert("Testo copiato negli appunti.");
+  } catch {
+    alert("Non riesco a copiare automaticamente. Seleziona il testo e copialo manualmente.");
+  }
+}
+
+function clearAllData() {
+  const confirmed = confirm("Vuoi davvero cancellare persone, item e ultimo risultato?");
+  if (!confirmed) return;
+
+  state.people = [];
+  state.items = [];
+  state.lastResultText = "";
+  localStorage.removeItem(STORAGE_KEY);
+  render();
+}
+
+addPersonBtn.addEventListener("click", addPerson);
+personInput.addEventListener("keydown", event => {
+  if (event.key === "Enter") addPerson();
+});
+
+addItemBtn.addEventListener("click", addItem);
+itemInput.addEventListener("keydown", event => {
+  if (event.key === "Enter") addItem();
+});
+
+selectAllBtn.addEventListener("click", () => {
+  state.items.forEach(item => item.selected = true);
+  saveState();
+  render();
+});
+
+deselectAllBtn.addEventListener("click", () => {
+  state.items.forEach(item => item.selected = false);
+  saveState();
+  render();
+});
+
+divideBtn.addEventListener("click", divideItems);
+shareBtn.addEventListener("click", shareResult);
+copyBtn.addEventListener("click", copyResult);
+clearDataBtn.addEventListener("click", clearAllData);
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("service-worker.js");
+  });
+}
+
+loadState();
+render();
