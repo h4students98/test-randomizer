@@ -1,0 +1,10 @@
+{
+  "name": "Dividi Item",
+  "short_name": "Dividi Item",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#111827",
+  "description": "Mini app per dividere casualmente item tra persone e condividere il risultato.",
+  "icons": []
+}
