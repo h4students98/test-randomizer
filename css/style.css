@@ -1,0 +1,195 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #0f172a;
+  --card: #111827;
+  --text: #f9fafb;
+  --muted: #9ca3af;
+  --border: #374151;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary: #374151;
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --whatsapp: #22c55e;
+  --whatsapp-hover: #16a34a;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: linear-gradient(180deg, #020617, var(--bg));
+  color: var(--text);
+}
+
+.app {
+  width: min(720px, 100%);
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.app-header {
+  margin-bottom: 20px;
+}
+
+.app-header h1 {
+  margin: 0 0 8px;
+  font-size: 2rem;
+}
+
+.app-header p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.card {
+  background: rgba(17, 24, 39, 0.96);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 1.15rem;
+}
+
+.input-row,
+.actions-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #020617;
+  color: var(--text);
+  font-size: 1rem;
+}
+
+input:focus {
+  outline: 2px solid var(--primary);
+  border-color: var(--primary);
+}
+
+button {
+  border: none;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: white;
+  background: var(--secondary);
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+button.primary {
+  width: 100%;
+  background: var(--primary);
+  margin-bottom: 12px;
+}
+
+button.primary:hover {
+  background: var(--primary-hover);
+}
+
+button.secondary {
+  background: var(--secondary);
+}
+
+button.danger {
+  width: 100%;
+  background: var(--danger);
+}
+
+button.danger:hover {
+  background: var(--danger-hover);
+}
+
+button.whatsapp {
+  flex: 1;
+  background: var(--whatsapp);
+}
+
+button.whatsapp:hover {
+  background: var(--whatsapp-hover);
+}
+
+.list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #020617;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.list-item span {
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+
+.list-item input[type="checkbox"] {
+  flex: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.icon-button {
+  padding: 8px 10px;
+  background: #1f2937;
+}
+
+.result-box {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  min-height: 120px;
+  background: #020617;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  color: var(--text);
+  font-family: inherit;
+}
+
+.danger-zone {
+  border-color: rgba(220, 38, 38, 0.5);
+}
+
+@media (max-width: 520px) {
+  .app {
+    padding: 14px;
+  }
+
+  .input-row,
+  .actions-row {
+    flex-direction: column;
+  }
+
+  button {
+    width: 100%;
+  }
+}
