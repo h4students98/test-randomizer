@@ -305,8 +305,7 @@ button.whatsapp:hover {
     flex-direction: column;
   }
 
-  button {
+  button:not(.icon-button) {
     width: 100%;
   }
-  }
-  
+}
